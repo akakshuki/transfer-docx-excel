@@ -1,4 +1,4 @@
-
+[![Python package](https://github.com/akakshuki/transfer-docx-excel/actions/workflows/pylint.yml/badge.svg?branch=main)](https://github.com/akakshuki/transfer-docx-excel/actions/workflows/pylint.yml)
 # Word-to-Excel and Empty-Line-Remover
 ## This script contains two functions:
 
