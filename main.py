@@ -70,14 +70,14 @@ def convert_file_word_to_excel(input_file_path, output_file_path):
         row = [question.statement, question.level, question.option_a,
                question.option_b, question.option_c, question.option_d]
         rows.append(row)
-    df_final = pd.DataFrame(rows, columns)
+    df_final = pd.DataFrame(rows, columns=columns)
 
     rows_for_qc = []
     for question in questions_for_qc:
         row = [question.statement, question.level, question.option_a,
                question.option_b, question.option_c, question.option_d]
         rows_for_qc.append(row)
-    df_qc = pd.DataFrame(rows_for_qc, columns)
+    df_qc = pd.DataFrame(rows_for_qc, columns=columns)
 
     # Create an Excel Workbook and add the DataFrame as a worksheet
     book = Workbook()
@@ -85,14 +85,12 @@ def convert_file_word_to_excel(input_file_path, output_file_path):
         './output/output_data.xlsx' if output_file_path == "" else output_file_path, engine='openpyxl')
     writer.book = book
     df_final.to_excel(writer, index=False, header=False, sheet_name='questions')
-    df_qc.to_excel(writer, index=False, header=False, sheet_name='questi')
+    df_qc.to_excel(writer, index=False, header=False, sheet_name='question_for_qc')
     # Save the Excel Workbook
     writer.save()
 
 # Remove empty file input
 # ==========================
- pylint --fail-under=8 python_code.py
-
 
 def conver_txt_file(input_file_path, output_file_path):
     # Open the input file
