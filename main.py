@@ -16,7 +16,6 @@ class Question:
         self.option_c = option_c
         self.option_d = option_d
 
-
 LEVEL_MAP = {
     'TH': 'Thông hiểu',
     'VD': 'Vận Dụng',
@@ -24,19 +23,15 @@ LEVEL_MAP = {
     'NB': 'Nhận biết',
 }
 
-
 def convert_file_word_to_excel(input_file_path, output_file_path):
     if input_file_path == "":
         sys.exit(0)
-  
     # Store the contents of the file in a list
     data = []
     questions = []
     questions_for_qc = []
-
     with open(input_file_path, "r", encoding='utf-8') as file:
         data = file.readlines()
-        
     for i, element in enumerate(data):
         if "Câu " in element:
             statement = element
@@ -50,8 +45,7 @@ def convert_file_word_to_excel(input_file_path, output_file_path):
             questions_for_qc.append(
                 Question(statement, level, option_a,
                          option_b, option_c, option_d)
-            )
-
+                )
     for i, element in enumerate(data):
         if "Câu " in element:
             statement = re.sub(r"Câu\s*\d*\s*\([^)]*\)", "", element)
@@ -64,7 +58,6 @@ def convert_file_word_to_excel(input_file_path, output_file_path):
             level = LEVEL_MAP.get(keyword, 'Vận dụng cao')
             questions.append(
                 Question(statement, level, option_a, option_b, option_c, option_d))
-
     # Convert data list to pandas data frame
     columns = ['statement', 'level', 'option_a',
                'option_b', 'option_c', 'option_d']
@@ -74,14 +67,12 @@ def convert_file_word_to_excel(input_file_path, output_file_path):
                question.option_b, question.option_c, question.option_d]
         rows.append(row)
     df_final = pd.DataFrame(rows, columns=columns)
-
     rows_for_qc = []
     for question in questions_for_qc:
         row = [question.statement, question.level, question.option_a,
                question.option_b, question.option_c, question.option_d]
         rows_for_qc.append(row)
     df_qc = pd.DataFrame(rows_for_qc, columns=columns)
-
     # Create an Excel Workbook and add the DataFrame as a worksheet
     book = Workbook()
     writer = pd.ExcelWriter(
@@ -93,10 +84,8 @@ def convert_file_word_to_excel(input_file_path, output_file_path):
                    sheet_name='question_for_qc')
     # Save the Excel Workbook
     writer.save()
-
 # Remove empty file input
 # ==========================
-
 def conver_txt_file(input_file_path, output_file_path):
     # Open the input file
     if input_file_path == "":
@@ -110,8 +99,6 @@ def conver_txt_file(input_file_path, output_file_path):
     # Open the output file and write the filtered lines to it
     with open(file='./output/output_data.txt' if output_file_path == "" else output_file_path, mode="w", encoding='utf-8') as output_file:
         output_file.writelines(lines)
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Converts word files to excel or removes empty lines from a text file')
