@@ -3,7 +3,6 @@ import re
 import sys
 
 import pandas as pd
-import docx
 from openpyxl import Workbook
 
 
@@ -17,6 +16,7 @@ class Question:
         self.option_c = option_c
         self.option_d = option_d
 
+
 LEVEL_MAP = {
     'TH': 'Thông hiểu',
     'VD': 'Vận Dụng',
@@ -24,19 +24,19 @@ LEVEL_MAP = {
     'NB': 'Nhận biết',
 }
 
+
 def convert_file_word_to_excel(input_file_path, output_file_path):
     if input_file_path == "":
         sys.exit(0)
-    # Read the contents of the Microsoft Word file
-    doc = docx.Document(input_file_path)
+  
     # Store the contents of the file in a list
     data = []
     questions = []
     questions_for_qc = []
 
-    for para in doc.paragraphs:
-        data.append(para.text)
-
+    with open(input_file_path, "r", encoding='utf-8') as file:
+        data = file.readlines()
+        
     for i, element in enumerate(data):
         if "Câu " in element:
             statement = element
@@ -48,9 +48,10 @@ def convert_file_word_to_excel(input_file_path, output_file_path):
             keyword = re.findall(r'\((.*?)\)', element)[0]
             level = LEVEL_MAP.get(keyword, 'Vận dụng cao')
             questions_for_qc.append(
-                Question(statement, level, option_a, option_b, option_c, option_d)
+                Question(statement, level, option_a,
+                         option_b, option_c, option_d)
             )
-                
+
     for i, element in enumerate(data):
         if "Câu " in element:
             statement = re.sub(r"Câu\s*\d*\s*\([^)]*\)", "", element)
@@ -61,10 +62,12 @@ def convert_file_word_to_excel(input_file_path, output_file_path):
             option_d = data[i+4].replace("D.", "")
             keyword = re.findall(r'\((.*?)\)', element)[0]
             level = LEVEL_MAP.get(keyword, 'Vận dụng cao')
-            questions.append(Question(statement, level, option_a, option_b, option_c, option_d))
+            questions.append(
+                Question(statement, level, option_a, option_b, option_c, option_d))
 
     # Convert data list to pandas data frame
-    columns=['statement', 'level', 'option_a', 'option_b', 'option_c', 'option_d']
+    columns = ['statement', 'level', 'option_a',
+               'option_b', 'option_c', 'option_d']
     rows = []
     for question in questions:
         row = [question.statement, question.level, question.option_a,
@@ -84,8 +87,10 @@ def convert_file_word_to_excel(input_file_path, output_file_path):
     writer = pd.ExcelWriter(
         './output/output_data.xlsx' if output_file_path == "" else output_file_path, engine='openpyxl')
     writer.book = book
-    df_final.to_excel(writer, index=False, header=False, sheet_name='questions')
-    df_qc.to_excel(writer, index=False, header=False, sheet_name='question_for_qc')
+    df_final.to_excel(writer, index=False, header=False,
+                      sheet_name='questions')
+    df_qc.to_excel(writer, index=False, header=False,
+                   sheet_name='question_for_qc')
     # Save the Excel Workbook
     writer.save()
 
@@ -96,15 +101,16 @@ def conver_txt_file(input_file_path, output_file_path):
     # Open the input file
     if input_file_path == "":
         sys.exit(0)
-    with open(input, "r", encoding="utf-8") as input_file:
+    with open(file=input_file_path, mode="r", encoding="utf-8") as input_file:
         # Read the contents of the file
         lines = input_file.readlines()
     # Remove empty lines from the list of lines
     lines = list(filter(lambda x: x.strip() != "", lines))
 
     # Open the output file and write the filtered lines to it
-    with open('./output/output_data.txt' if output_file_path == "" else output_file_path, "w", encoding='utf-8') as output_file:
+    with open(file='./output/output_data.txt' if output_file_path == "" else output_file_path, mode="w", encoding='utf-8') as output_file:
         output_file.writelines(lines)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
