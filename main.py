@@ -1,7 +1,6 @@
 import argparse
 from docx_functions import convert_file_word_to_excel, conver_txt_file
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Converts word files to excel or removes empty lines from a text file')
@@ -15,3 +14,4 @@ if __name__ == '__main__':
         convert_file_word_to_excel(args.input_address, args.output_address)
     elif args.function_name == 'rm':
         conver_txt_file(args.input_address, args.output_address)
+
