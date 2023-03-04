@@ -14,4 +14,3 @@ if __name__ == '__main__':
         convert_file_word_to_excel(args.input_address, args.output_address)
     elif args.function_name == 'rm':
         conver_txt_file(args.input_address, args.output_address)
-
